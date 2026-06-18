@@ -25,3 +25,7 @@ __pycache__/
 .vscode/
 .idea/
 *.DS_Store
+
+#generador de documentacion de este proyecto
+generar_documento.py
+generar_uml.py

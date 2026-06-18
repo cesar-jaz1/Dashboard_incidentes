@@ -9,7 +9,7 @@ accidente es más probable* según la zona y la hora. Todo se explora en un
 **tablero interactivo** hecho con Streamlit.
 
 > **🔴 Demo en vivo:** _pega aquí la URL de Streamlit Cloud cuando despliegues_
-> `https://<tu-app>.streamlit.app`
+> `https://dashboardincidentes-owxtahtpg8jwuw2qxbaipz.streamlit.app/`
 
 ---
 
