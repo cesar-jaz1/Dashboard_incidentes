@@ -32,7 +32,8 @@ from predictivo import PredictorTipoAccidente
 
 # ── Configuración general ──────────────────────────────────
 st.set_page_config(page_title="Incidentes Viales CDMX",
-                   page_icon="🚦", layout="wide")
+                   page_icon="🚦", layout="wide",
+                   initial_sidebar_state="expanded")
 
 BASE_DIR     = Path(__file__).parent
 RUTA_PARQUET = BASE_DIR / "datos" / "viales_limpio.parquet"
@@ -49,6 +50,14 @@ MESES = {1: "Ene", 2: "Feb", 3: "Mar", 4: "Abr", 5: "May", 6: "Jun",
          7: "Jul", 8: "Ago", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dic"}
 DIAS_ORDEN = ["Lunes", "Martes", "Miércoles", "Jueves",
               "Viernes", "Sábado", "Domingo"]
+
+# Menú de navegación: clave -> (ícono, etiqueta, descripción corta)
+PAGINAS = {
+    "inicio":      ("🏠", "Inicio",       "Página principal y resumen"),
+    "descriptivo": ("📊", "Ver análisis", "6 gráficas: cuándo, dónde y qué tipo de incidentes"),
+    "predictivo":  ("🔮", "Predecir",     "Elige alcaldía y hora → tipo de accidente más probable"),
+    "dataset":     ("🗂️", "Los datos",    "De dónde salen los datos y explorar los registros"),
+}
 
 
 # ══════════════════════════════════════════════════════════
@@ -77,6 +86,12 @@ def porque(texto: str) -> None:
         st.markdown(texto)
 
 
+def ir_a(pagina: str) -> None:
+    """Cambia de sección y refresca la vista."""
+    st.session_state.pagina = pagina
+    st.rerun()
+
+
 # ══════════════════════════════════════════════════════════
 #  PÁGINA: INICIO
 # ══════════════════════════════════════════════════════════
@@ -84,36 +99,61 @@ def porque(texto: str) -> None:
 def pagina_inicio(df: pd.DataFrame) -> None:
     st.title("🚦 Incidentes Viales CDMX · 2022–2024")
     st.markdown(
-        "Análisis de **503,339 incidentes viales** registrados por el C5 de "
-        "la Ciudad de México. Este tablero recorre el proyecto en dos fases: "
-        "primero **describimos** lo que pasó y, con ese conocimiento, "
-        "**predecimos** qué tipo de accidente es más probable según la zona y la hora."
+        "Bienvenida/o. Este tablero analiza **503,339 incidentes viales** "
+        "registrados por el C5 de la Ciudad de México.  \n"
+        "👉 **Elige abajo qué quieres hacer** (o usa el menú de la izquierda)."
     )
+    st.write("")
 
+    # ── Tarjetas-lanzador (navegación principal, bien visible) ──
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        with st.container(border=True):
+            st.markdown("### 📊 Ver análisis")
+            st.write("Gráficas interactivas: a qué **horas**, en qué "
+                     "**alcaldías** y de qué **tipo** son los incidentes.")
+            if st.button("Abrir análisis  →", key="go_desc",
+                         width='stretch', type="primary"):
+                ir_a("descriptivo")
+    with c2:
+        with st.container(border=True):
+            st.markdown("### 🔮 Predecir")
+            st.write("Dime una **alcaldía** y una **hora** y te digo qué "
+                     "**tipo de accidente** es más probable.")
+            if st.button("Hacer predicción  →", key="go_pred",
+                         width='stretch', type="primary"):
+                ir_a("predictivo")
+    with c3:
+        with st.container(border=True):
+            st.markdown("### 🗂️ Los datos")
+            st.write("De dónde salen los datos, cómo se limpiaron y un "
+                     "**explorador** de registros.")
+            if st.button("Ver los datos  →", key="go_data",
+                         width='stretch', type="primary"):
+                ir_a("dataset")
+
+    st.divider()
     c1, c2, c3, c4 = st.columns(4)
+    n_alc = df.loc[df['alcaldia_catalogo'] != 'Sin alcaldía', 'alcaldia_catalogo'].nunique()
     c1.metric("Incidentes", f"{len(df):,}")
-    c2.metric("Alcaldías", df['alcaldia_catalogo'].nunique())
+    c2.metric("Alcaldías", n_alc)
     c3.metric("Colonias", f"{df['colonia_catalogo'].nunique():,}")
     c4.metric("% graves", f"{df['es_grave'].mean()*100:.1f}%")
 
-    st.divider()
-    st.subheader("¿Por qué analizamos así?")
-    st.markdown(
-        """
-        - **De lo descriptivo a lo predictivo.** No predecimos "a ciegas": cada
-          variable del modelo (hora, alcaldía, mes, fin de semana) la elegimos
-          porque el análisis descriptivo mostró que la distribución de
-          accidentes **cambia** con ella.
-        - **7 tipos en vez de 14.** Los 14 subtipos originales tienen una cola
-          de casos rarísimos. Agruparlos en **6 principales + "Otros"** hace los
-          gráficos legibles y el modelo más estable, sin perder información útil.
-        - **Interactivo.** Es un tablero: eliges alcaldía, mueves la hora y los
-          gráficos responden. Así cualquiera explora sus propias preguntas.
-        - **Cada gráfico tiene un porqué.** En cada análisis incluimos una nota
-          explicando qué pregunta responde y por qué ese tipo de gráfico es el
-          adecuado (proporción, comparación, relación, evolución o ubicación).
-        """
-    )
+    with st.expander("¿Por qué analizamos así? (la idea del proyecto)"):
+        st.markdown(
+            """
+            - **De lo descriptivo a lo predictivo.** No predecimos "a ciegas":
+              cada variable del modelo (hora, alcaldía, mes, fin de semana) se
+              eligió porque el análisis descriptivo mostró que la distribución
+              de accidentes **cambia** con ella.
+            - **7 tipos en vez de 14.** Agrupamos los subtipos en **6 principales
+              + "Otros"**: gráficos legibles y modelo más estable.
+            - **Interactivo.** Eliges alcaldía, mueves la hora y los gráficos
+              responden. Cada análisis explica qué pregunta responde y por qué
+              ese tipo de gráfico.
+            """
+        )
 
 
 # ══════════════════════════════════════════════════════════
@@ -464,6 +504,35 @@ def pagina_predictivo(df: pd.DataFrame) -> None:
 #  NAVEGACIÓN
 # ══════════════════════════════════════════════════════════
 
+def barra_lateral() -> None:
+    """Menú de navegación con íconos + etiquetas, estilo app."""
+    with st.sidebar:
+        st.title("🚦 Viales CDMX")
+        st.caption("Tablero de incidentes viales · 2022–2024")
+
+        with st.expander("❓ ¿Cómo usar este tablero?"):
+            st.markdown(
+                "1. Pulsa una sección de este menú (o las tarjetas del inicio).\n"
+                "2. En **📊 Ver análisis** cambia de gráfica con las pestañas de arriba.\n"
+                "3. En **🔮 Predecir** elige alcaldía y hora y mira el resultado.\n"
+                "4. ¿No ves este menú? Pulsa la flecha **»** de la esquina "
+                "superior izquierda para abrirlo."
+            )
+        st.divider()
+
+        for clave, (icono, etiqueta, desc) in PAGINAS.items():
+            activo = st.session_state.pagina == clave
+            if st.button(f"{icono}  {etiqueta}", key=f"nav_{clave}",
+                         width='stretch',
+                         type="primary" if activo else "secondary",
+                         help=desc):
+                ir_a(clave)
+
+        st.divider()
+        st.caption("Proyecto final · Aplicaciones para Análisis de Datos\n\n"
+                   "Datos abiertos: C5 CDMX")
+
+
 def main() -> None:
     df = cargar_datos()
     if df.empty:
@@ -471,22 +540,19 @@ def main() -> None:
                  "Corre primero `python main.py --paso limpieza`.")
         st.stop()
 
-    st.sidebar.title("🚦 Viales CDMX")
-    pagina = st.sidebar.radio(
-        "Navegación",
-        ["Inicio", "Dataset", "Descriptivo", "Predictivo"],
-    )
-    st.sidebar.divider()
-    st.sidebar.caption("Proyecto final · Aplicaciones para Análisis de Datos\n\n"
-                       "Datos: C5 CDMX 2022–2024")
+    if "pagina" not in st.session_state:
+        st.session_state.pagina = "inicio"
 
-    if pagina == "Inicio":
+    barra_lateral()
+
+    pagina = st.session_state.pagina
+    if pagina == "inicio":
         pagina_inicio(df)
-    elif pagina == "Dataset":
+    elif pagina == "dataset":
         pagina_dataset(df)
-    elif pagina == "Descriptivo":
+    elif pagina == "descriptivo":
         pagina_descriptivo(df)
-    elif pagina == "Predictivo":
+    elif pagina == "predictivo":
         pagina_predictivo(df)
 
 
