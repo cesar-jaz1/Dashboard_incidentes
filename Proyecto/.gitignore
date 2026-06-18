@@ -1,0 +1,27 @@
+# Entorno virtual
+venv/
+.venv/
+
+# Datos: el CSV pesa ~128 MB y NO va al repo.
+# El Parquet ligero (~9 MB) SÍ se sube: lo necesita el dashboard desplegado.
+datos/*.csv
+datos/inViales_2022_2024.csv
+
+# Gráficas estáticas (se regeneran con python main.py)
+graficas/
+
+# Previews temporales del UML
+docs/_*.png
+
+# Variables de entorno
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Editores / SO
+.vscode/
+.idea/
+*.DS_Store
