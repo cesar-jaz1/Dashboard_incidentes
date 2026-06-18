@@ -138,19 +138,6 @@ python generar_uml.py          # regenera el diagrama UML
 
 ---
 
-## Desplegar en Streamlit Community Cloud (gratis, sin instalar nada)
-
-Así cualquiera usa el tablero desde una URL, sin descargar requerimientos:
-
-1. Sube el proyecto a un repositorio **público** de GitHub
-   (el `.parquet` de ~9 MB debe subir; el `.csv` queda excluido por `.gitignore`).
-2. Entra a [share.streamlit.io](https://share.streamlit.io) e inicia sesión con GitHub.
-3. **New app** → elige el repo, la rama y `app.py` como archivo principal.
-4. **Deploy.** Streamlit instala `requirements.txt` automáticamente y te da la URL.
-5. Pega esa URL arriba en la sección **Demo en vivo**.
-
----
-
 ## Dataset
 
 | Campo | Valor |
