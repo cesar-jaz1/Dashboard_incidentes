@@ -1,4 +1,4 @@
-# 🚦 Incidentes Viales CDMX 2022–2024 — Dashboard interactivo
+#  Incidentes Viales CDMX 2022–2024 — Dashboard interactivo
 
 Proyecto final de **Aplicaciones para Análisis de Datos**.
 
@@ -8,7 +8,7 @@ primero entiende *qué pasó* y, con ese conocimiento, predice *qué tipo de
 accidente es más probable* según la zona y la hora. Todo se explora en un
 **tablero interactivo** hecho con Streamlit.
 
-> **🔴 Demo en vivo:** _pega aquí la URL de Streamlit Cloud cuando despliegues_
+> ** Demo en vivo:** _pega aquí la URL de Streamlit Cloud cuando despliegues_
 > `https://dashboardincidentes-owxtahtpg8jwuw2qxbaipz.streamlit.app/`
 
 ---
@@ -37,7 +37,7 @@ Esta es la idea que guía todo el proyecto:
 
 ```
 Proyecto/
-├── app.py            # ⭐ Dashboard interactivo (Streamlit + Plotly)  → streamlit run app.py
+├── app.py            #  Dashboard interactivo (Streamlit + Plotly)  → streamlit run app.py
 ├── main.py           # Pipeline offline (genera CSV/Parquet y PNGs del reporte)
 ├── limpieza.py       # Fase 1 — limpieza + exporta viales_limpio.csv y .parquet
 ├── modelos.py        # Fase 2 — clases POO (incluye TipoAccidente / CatalogoTipos)
@@ -48,7 +48,7 @@ Proyecto/
 ├── datos/
 │   ├── inViales_2022_2024.csv   # CSV original (no se sube: ~128 MB)
 │   ├── viales_limpio.csv        # limpio completo (no se sube)
-│   └── viales_limpio.parquet    # ⭐ versión ligera (~9 MB) que usa el dashboard
+│   └── viales_limpio.parquet    #  versión ligera (~9 MB) que usa el dashboard
 │
 ├── docs/UML_clases.svg          # diagrama de clases
 ├── graficas/                    # PNGs del reporte (se regeneran)
