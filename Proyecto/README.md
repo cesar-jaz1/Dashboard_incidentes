@@ -43,12 +43,12 @@ Proyecto/
 ├── modelos.py        # Fase 2 — clases POO (incluye TipoAccidente / CatalogoTipos)
 ├── descriptivo.py    # Fase 3 — exporta las 6 gráficas estáticas (PNG)
 ├── predictivo.py     # Fase 4 — PredictorTipoAccidente (Naive Bayes + baseline)
-├── generar_uml.py    # Diagrama UML de clases → docs/UML_clases.svg / .pdf
 │
 ├── datos/
-│   ├── inViales_2022_2024.csv   # CSV original (no se sube: ~128 MB)
-│   ├── viales_limpio.csv        # limpio completo (no se sube)
-│   └── viales_limpio.parquet    #  versión ligera (~9 MB) que usa el dashboard
+│   ├── diccionario-incidentes-viales-c5 (1)   # diccionario de datos para el cvs original
+│   ├── inViales_2022_2024.csv                 # CSV original (no se sube: ~128 MB)
+│   ├── viales_limpio.csv                      # limpio completo (no se sube)
+│   └── viales_limpio.parquet                  #  versión ligera (~9 MB) que usa el dashboard
 │
 ├── docs/UML_clases.svg          # diagrama de clases
 ├── graficas/                    # PNGs del reporte (se regeneran)
